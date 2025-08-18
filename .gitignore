@@ -4,7 +4,7 @@
 /vendor-bin/
 /composer.phar
 
-# IDE/OS
+# IDE / OS
 .vscode/
 .idea/
 .DS_Store
@@ -15,12 +15,18 @@ Thumbs.db
 .phpunit.cache/
 .php-cs-fixer.cache
 
-# Logs & uploads
+# Logs
 /logs/
-public/uploads/
-public/uploads/certifs/
+*.log
 
-# Configs locales (si tu en ajoutes)
+# Uploads (ignorer les fichiers, garder les dossiers via .gitkeep)
+public/uploads/*
+!public/uploads/.gitkeep
+public/uploads/certifs/*
+!public/uploads/certifs/.gitkeep
+
+# Configs locales (ne pas versionner la vraie config)
 .env
 .env.local
 app/config.local.php
+app/config.php

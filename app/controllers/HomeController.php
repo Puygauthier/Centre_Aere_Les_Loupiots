@@ -1,10 +1,11 @@
 <?php
 namespace App\Controllers;
 
+use App\Models\Activite;
+
 class HomeController {
   public function index(): void {
-    $title = 'Centre Aéré - Accueil';
-    $contentView = ROOT . '/app/views/home/index.php';
-    require ROOT . '/app/views/layout.php';
+    $activites = Activite::all(); // liste pour l'accueil
+    include ROOT . '/app/views/inscriptions/home.php';
   }
 }

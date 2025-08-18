@@ -5,7 +5,7 @@ use App\Models\Activite;
 
 class HomeController {
   public function index(): void {
-    $activites = Activite::all();
+    $activites = Activite::all(); // liste pour l'accueil
     include ROOT . '/app/views/inscriptions/home.php';
   }
 }

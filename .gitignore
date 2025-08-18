@@ -1,0 +1,26 @@
+# Dépendances & environnements
+/vendor/
+/node_modules/
+/vendor-bin/
+/composer.phar
+
+# IDE/OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Build & caches
+/cache/
+.phpunit.cache/
+.php-cs-fixer.cache
+
+# Logs & uploads
+/logs/
+public/uploads/
+public/uploads/certifs/
+
+# Configs locales (si tu en ajoutes)
+.env
+.env.local
+app/config.local.php

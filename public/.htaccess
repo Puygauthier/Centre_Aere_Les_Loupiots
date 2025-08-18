@@ -1,0 +1,10 @@
+RewriteEngine On
+RewriteBase /Centre_Aere_Les_Loupiots/public/
+
+# Ne pas réécrire si c'est un fichier ou dossier réel
+RewriteCond %{REQUEST_FILENAME} -f [OR]
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteRule ^ - [L]
+
+# Tout le reste est envoyé à index.php AVEC le paramètre r
+RewriteRule ^(.*)$ index.php?r=/$1 [QSA,L]

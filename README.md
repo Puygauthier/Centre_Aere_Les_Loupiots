@@ -16,9 +16,9 @@ Application **MVC PHP** (WAMP) pour gérer les activités et inscriptions d’un
 ## Installation
 
 ### 1) Base de données
-- Créez une base **`centre_aere_les_loupiots`**.
-- Importez **`schema.sql`** (phpMyAdmin ou client MySQL).  
-  *Le fichier contient la structure et des données d’exemple.*
+- Ouvrez **phpMyAdmin** : http://localhost/phpmyadmin
+- Si besoin, créez la base **`centre_aere_les_loupiots`** (utf8mb4).
+- Onglet **Importer** → choisissez **`dump_full.sql`** → **Exécuter**.
 
 ### 2) Configuration
 - Copiez l’exemple puis adaptez vos accès MySQL :
@@ -104,7 +104,7 @@ Ajuster au besoin :
 
     Copy-Item app\config.example.php app\config.php -Force
 
-- **Erreur MySQL / table manquante** → réimportez `schema.sql` dans `centre_aere_les_loupiots`
+- **Erreur MySQL / table manquante** → réimportez `dump_full.sql` dans `centre_aere_les_loupiots`
 - **404 sous Apache** → vérifiez le `.htaccess` dans `public/` et que la racine pointe sur `public/`
 
 ---

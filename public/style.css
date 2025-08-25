@@ -1,0 +1,250 @@
+/* Loupiots CSS v3-colors-global */
+/* Google Fonts (polices ludiques) */
+@import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&family=Nunito:wght@400;700&display=swap');
+
+/* Style de base – Les Loupiots */
+:root{
+  --brand:#2563eb; /* bleu */
+  --brand-2:#1e40af;
+  --accent:#10b981; /* vert */
+  --bg:#f7f8fa;
+  --text:#111827;
+  --muted:#6b7280;
+  --border:#e5e7eb;
+
+  /* Teintes du fond (peuvent être ajustées) */
+  --page-bg: #f8fbff;
+  --page-overlay: rgba(255,255,255,0.82); /* voile qui éclaircit le motif */
+}
+
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{
+  font:16px/1.55 "Fredoka","Nunito",system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+  color:var(--text);
+
+  /* === Fond ludique par défaut : confettis + voile doux === */
+  background-color: var(--page-bg);
+  background-image:
+    linear-gradient(180deg, var(--page-overlay), var(--page-overlay)),
+    url("data:image/svg+xml;utf8,\
+<svg xmlns='http://www.w3.org/2000/svg' width='120' height='120' viewBox='0 0 60 60'>\
+<rect width='60' height='60' fill='none'/>\
+<circle cx='8' cy='8' r='2' fill='%23ffd166'/>\
+<circle cx='30' cy='12' r='2' fill='%23a5d8ff'/>\
+<circle cx='50' cy='20' r='1.8' fill='%23ffc9c9'/>\
+<rect x='12' y='36' width='3' height='3' rx='0.6' fill='%23b9fbc0'/>\
+<rect x='42' y='44' width='2.6' height='2.6' rx='0.5' fill='%23fdffb6'/>\
+<path d='M10 48 l4 -4 l4 4 l-4 4z' fill='%23ffc6ff'/>\
+<path d='M26 30 l3 -3 l3 3 l-3 3z' fill='%23c3f0ca'/>\
+<circle cx='22' cy='52' r='1.6' fill='%23c4e1ff'/>\
+</svg>");
+  background-size: auto, 280px 280px; /* grille du motif */
+  background-attachment: fixed; /* effet doux au scroll */
+}
+
+/* Conteneur simple */
+.container{
+  max-width:1100px;
+  margin:24px auto;
+  padding:0 16px;
+}
+
+/* Titres */
+h1{font-size:30px;margin:0 0 16px; letter-spacing:.2px}
+h2{font-size:22px;margin:24px 0 12px}
+p{margin:0 0 12px;color:#1f2937}
+
+/* Cartes légères */
+.card{
+  background:#fff;
+  border:1px solid var(--border);
+  border-radius:14px;
+  padding:16px;
+  box-shadow:0 2px 8px rgba(0,0,0,.06);
+}
+
+/* ================================
+   Tableaux (base)
+   ================================ */
+table{
+  width:100%;
+  border-collapse:collapse;
+  background:#fff;
+  border:1px solid var(--border);
+  border-radius:14px;
+  overflow:hidden;
+  box-shadow:0 2px 8px rgba(0,0,0,.06);
+  position:relative;
+}
+th,td{
+  padding:12px 14px;
+  border-bottom:1px solid var(--border);
+  text-align:left;
+  vertical-align: top;
+}
+th{ font-weight:700; }
+.table-actions{display:flex;gap:8px;align-items:center}
+
+/* ================================
+   Tables colorées par colonnes (GLOBAL)
+   + Zébrage lignes (voile)
+   ================================ */
+
+/* Palette par colonne (jusqu’à 8 colonnes) */
+:root{
+  --col1:#FFE8D9; /* pêche */
+  --col2:#FFF6BF; /* citron */
+  --col3:#E8F9F1; /* menthe */
+  --col4:#E6F3FF; /* ciel */
+  --col5:#F1E8FF; /* lavande */
+  --col6:#FFE8F1; /* rose */
+  --col7:#E0E7FF; /* indigo pâle */
+  --col8:#FFE4E6; /* rose clair */
+}
+
+/* En-têtes transparents (recouverts par la couleur de colonne) */
+th { background: transparent; }
+
+/* FONDS de colonnes (thead ET tbody) */
+table thead th:nth-child(1), table tbody td:nth-child(1),
+table tr:first-child th:nth-child(1){ background: var(--col1) !important; }
+table thead th:nth-child(2), table tbody td:nth-child(2),
+table tr:first-child th:nth-child(2){ background: var(--col2) !important; }
+table thead th:nth-child(3), table tbody td:nth-child(3),
+table tr:first-child th:nth-child(3){ background: var(--col3) !important; }
+table thead th:nth-child(4), table tbody td:nth-child(4),
+table tr:first-child th:nth-child(4){ background: var(--col4) !important; }
+table thead th:nth-child(5), table tbody td:nth-child(5),
+table tr:first-child th:nth-child(5){ background: var(--col5) !important; }
+table thead th:nth-child(6), table tbody td:nth-child(6),
+table tr:first-child th:nth-child(6){ background: var(--col6) !important; }
+table thead th:nth-child(7), table tbody td:nth-child(7),
+table tr:first-child th:nth-child(7){ background: var(--col7) !important; }
+table thead th:nth-child(8), table tbody td:nth-child(8),
+table tr:first-child th:nth-child(8){ background: var(--col8) !important; }
+
+/* TEXTE des entêtes en couleur vive (comme /staff/certificats)
+   → fonctionne AVEC ou SANS <thead> */
+table thead th:nth-child(1), table tr:first-child th:nth-child(1){ color:#b0276a !important; text-shadow:0 1px 0 rgba(255,255,255,.55); }
+table thead th:nth-child(2), table tr:first-child th:nth-child(2){ color:#b45309 !important; text-shadow:0 1px 0 rgba(255,255,255,.55); }
+table thead th:nth-child(3), table tr:first-child th:nth-child(3){ color:#0f766e !important; text-shadow:0 1px 0 rgba(255,255,255,.55); }
+table thead th:nth-child(4), table tr:first-child th:nth-child(4){ color:#1d4ed8 !important; text-shadow:0 1px 0 rgba(255,255,255,.55); }
+table thead th:nth-child(5), table tr:first-child th:nth-child(5){ color:#6d28d9 !important; text-shadow:0 1px 0 rgba(255,255,255,.55); }
+table thead th:nth-child(6), table tr:first-child th:nth-child(6){ color:#be185d !important; text-shadow:0 1px 0 rgba(255,255,255,.55); }
+table thead th:nth-child(7), table tr:first-child th:nth-child(7){ color:#4338ca !important; text-shadow:0 1px 0 rgba(255,255,255,.55); }
+table thead th:nth-child(8), table tr:first-child th:nth-child(8){ color:#db2777 !important; text-shadow:0 1px 0 rgba(255,255,255,.55); }
+
+/* Zébrage subtil : voile gris translucide sur lignes paires
+   → superposé (n'écrase pas la couleur de colonne) */
+tbody tr:nth-child(even) td { position: relative; }
+tbody tr:nth-child(even) td::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  background: rgba(0,0,0,0.05); /* voile gris léger */
+  pointer-events:none; /* clics traversants */
+}
+
+/* Survol de ligne : léger assombrissement supplémentaire */
+tbody tr:hover td::after{
+  background: rgba(0,0,0,0.08);
+}
+
+/* Mobile */
+@media (max-width: 640px){
+  th, td { padding: 10px 12px; }
+}
+
+/* ================================
+   Boutons
+   ================================ */
+button,
+input[type=submit],
+a.btn{
+  display:inline-block;
+  padding:10px 14px;
+  border-radius:12px;
+  border:1px solid transparent;
+  background:var(--brand);
+  color:#fff;
+  text-decoration:none;
+  cursor:pointer;
+  font-weight:700;
+  letter-spacing:.2px;
+}
+button:hover,
+input[type=submit]:hover,
+a.btn:hover{background:var(--brand-2)}
+.btn-secondary{
+  background:#fff;color:var(--text);
+  border-color:var(--border);
+}
+.btn-secondary:hover{background:#f9fafb}
+
+/* ================================
+   Formulaires
+   ================================ */
+label{display:block;margin:10px 0 6px;font-weight:700}
+input[type=text], input[type=date], input[type=file],
+select, textarea{
+  width:100%;
+  padding:10px 12px;
+  border:1px solid var(--border);
+  border-radius:12px;
+  background:#fff;
+}
+input:focus, select:focus, textarea:focus{
+  outline:3px solid rgba(37,99,235,.18);
+  border-color:var(--brand);
+}
+
+/* ================================
+   Alertes / messages
+   ================================ */
+.alert{
+  padding:10px 12px;border-radius:12px;margin:12px 0;border:1px solid;
+}
+.alert-success{background:#ecfdf5;border-color:#a7f3d0;color:#065f46}
+.alert-error{background:#fef2f2;border-color:#fecaca;color:#991b1b}
+.alert-info{background:#eff6ff;border-color:#bfdbfe;color:#1e3a8a}
+
+/* ================================
+   Barre du haut optionnelle
+   ================================ */
+.site-header{
+  background:#fff;border-bottom:1px solid var(--border);
+}
+.site-header .inner{
+  max-width:1100px;margin:0 auto;padding:10px 16px;
+  display:flex;gap:12px;align-items:center;justify-content:space-between
+}
+.site-header a{color:var(--text);text-decoration:none}
+.site-header nav a{padding:8px 10px;border-radius:8px}
+.site-header nav a:hover{background:#f3f4f6}
+
+/* Titre ludique multicolore */
+.rainbow-title {
+  text-align: center;
+  font-size: 48px;
+  font-weight: 800;
+  letter-spacing: 2px;
+  margin: 20px 0 30px;
+}
+.rainbow-title span:nth-child(1) { color: #e63946; } /* rouge */
+.rainbow-title span:nth-child(2) { color: #f77f00; } /* orange */
+.rainbow-title span:nth-child(3) { color: #fcbf49; } /* jaune */
+.rainbow-title span:nth-child(4) { color: #2a9d8f; } /* vert turquoise */
+.rainbow-title span:nth-child(5) { color: #264653; } /* bleu foncé */
+.rainbow-title span:nth-child(6) { color: #06d6a0; } /* vert clair */
+.rainbow-title span:nth-child(7) { color: #118ab2; } /* bleu */
+.rainbow-title span:nth-child(8) { color: #9d4edd; } /* violet */
+.rainbow-title span:nth-child(9) { color: #ef476f; } /* rose/rouge */
+
+/* Barre d’actions au-dessus du tableau */
+.actions-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 16px 0;
+}

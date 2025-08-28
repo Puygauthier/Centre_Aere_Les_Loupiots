@@ -51,12 +51,15 @@
   </div>
 
   <div class="card form-grid">
-    <form method="post" action="<?= BASE_PATH ?>/inscriptions">
+    <!-- enctype ajouté pour permettre l'upload -->
+    <form method="post" action="<?= BASE_PATH ?>/inscriptions" enctype="multipart/form-data">
 
       <label for="enfant" class="rainbow-label" aria-label="Enfant">
         <span>E</span><span>n</span><span>f</span><span>a</span><span>n</span><span>t</span>
       </label>
       <select id="enfant" name="enfant_id" required>
+        <!-- placeholder pour ne pas pré-remplir -->
+        <option value="" selected disabled>— Sélectionner —</option>
         <?php if (!empty($enfants)) foreach ($enfants as $e): ?>
           <option value="<?= (int)$e['id'] ?>"><?= htmlspecialchars($e['nom'].' '.$e['prenom'], ENT_QUOTES, 'UTF-8') ?></option>
         <?php endforeach; ?>
@@ -66,10 +69,15 @@
         <span>A</span><span>c</span><span>t</span><span>i</span><span>v</span><span>i</span><span>t</span><span>é</span>
       </label>
       <select id="activite" name="activite_id" required>
+        <!-- placeholder pour ne pas pré-remplir -->
+        <option value="" selected disabled>— Sélectionner —</option>
         <?php if (!empty($activites)) foreach ($activites as $a): ?>
           <option value="<?= (int)$a['id'] ?>"><?= htmlspecialchars($a['titre'] ?? '—', ENT_QUOTES, 'UTF-8') ?></option>
         <?php endforeach; ?>
       </select>
+
+      <!-- Bloc certificats (généré dynamiquement si requis par l'activité) -->
+      <div id="certifs-box" class="card" style="margin-top:12px; display:none; padding:12px;"></div>
 
       <div style="display:flex;justify-content:space-between;gap:12px;margin-top:14px;">
         <a class="btn btn-secondary" href="<?= BASE_PATH ?>/inscriptions">← Retour</a>
@@ -80,6 +88,50 @@
   </div>
 
 </div>
+
+<!-- Petit script : affiche les champs fichier uniquement si l'activité choisie l'exige -->
+<script>
+(function(){
+  const base = "<?= BASE_PATH ?>";
+  const sel  = document.getElementById('activite');
+  const box  = document.getElementById('certifs-box');
+
+  function clearBox(){
+    box.innerHTML = "";
+    box.style.display = "none";
+  }
+
+  function onActivityChange(){
+    const id = sel.value;
+    if(!id){ clearBox(); return; }
+
+    fetch(base + '/activites/' + id + '/certifs')
+      .then(r => r.json())
+      .then(list => {
+        if (!Array.isArray(list) || list.length === 0) { clearBox(); return; }
+
+        // Construire les champs attendus par ton contrôleur: certif_{code}
+        let html = '<div class="alert alert-info" style="margin-bottom:10px;">Cette activité nécessite un ou plusieurs certificats :</div>';
+        list.forEach(c => {
+          const code = String(c.code || '').toLowerCase().replace(/[^a-z0-9_]/g,'');
+          const lib  = String(c.libelle || code);
+          const rainbow = lib.split('').map(ch => '<span>'+ch+'</span>').join('');
+          html += `
+            <label class="rainbow-label" for="certif_${code}" style="margin-top:12px;">${rainbow}</label>
+            <input type="file" id="certif_${code}" name="certif_${code}" accept=".pdf,.jpg,.jpeg,.png" required>
+          `;
+        });
+        box.innerHTML = html;
+        box.style.display = "block";
+      })
+      .catch(() => clearBox());
+  }
+
+  sel.addEventListener('change', onActivityChange);
+  // au cas où une valeur serait déjà sélectionnée (normalement non)
+  onActivityChange();
+})();
+</script>
 
 </body>
 </html>

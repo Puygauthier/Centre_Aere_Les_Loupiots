@@ -1,85 +1,66 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Activités — Les Loupiots</title>
-  <link rel="stylesheet" href="<?= BASE_PATH ?>/style.css">
-</head>
-<body>
+<?php
+// Vue: app/views/activites/inscriptions.php
+// Objectif: même look que l'accueil, sans passer par le layout.
 
-  <h1>Activités</h1>
+// Titre activité (array ou objet)
+$titreActivite = 'Activité';
+if (isset($activite)) {
+    if (is_array($activite) && isset($activite['titre'])) $titreActivite = $activite['titre'];
+    if (is_object($activite) && isset($activite->titre))   $titreActivite = $activite->titre;
+}
 
-  <p><a class="btn" href="<?= BASE_PATH ?>/login">Espace staff</a></p>
-  <p><a class="btn btn-secondary" href="<?= BASE_PATH ?>/inscriptions/create">+ Nouvelle inscription</a></p>
+// Données d'inscriptions
+$rows = is_array($inscriptions ?? null) ? $inscriptions : [];
 
-  <table>
-    <tr>
-      <th>Titre</th>
-      <th>Catégorie</th>
-      <th>Début</th>
-      <th>Fin</th>
-      <th>Capacité</th>
-      <th>Restantes</th>
-    </tr>
+// Helper: enrobe chaque caractère dans <span> pour rainbow-title
+$toSpans = static function (string $txt): string {
+    // gestion UTF-8
+    if (function_exists('mb_str_split')) {
+        $chars = mb_str_split($txt);
+    } else {
+        $chars = preg_split('//u', $txt, -1, PREG_SPLIT_NO_EMPTY);
+    }
+    $out = '';
+    foreach ($chars as $ch) {
+        $out .= '<span>' . htmlspecialchars($ch, ENT_QUOTES, 'UTF-8') . '</span>';
+    }
+    return $out;
+};
+?>
+<link rel="stylesheet" href="<?= (defined('BASE_PATH') ? BASE_PATH : '') ?>/style.css?v=3">
 
-    <tr>
-      <td>Cinéma</td>
-      <td>sortie</td>
-      <td>2025-09-03 14:00:00</td>
-      <td>2025-09-03 16:30:00</td>
-      <td>54</td>
-      <td>53</td>
-    </tr>
-    <tr>
-      <td>Journée plage + pique-nique</td>
-      <td>sortie</td>
-      <td>2025-08-28 09:00:00</td>
-      <td>2025-08-28 17:00:00</td>
-      <td>54</td>
-      <td>54</td>
-    </tr>
-    <tr>
-      <td>Atelier peinture</td>
-      <td>centre</td>
-      <td>2025-08-25 09:00:00</td>
-      <td>2025-08-25 12:00:00</td>
-      <td>75</td>
-      <td>74</td>
-    </tr>
-    <tr>
-      <td>Sortie vélo + pique-nique</td>
-      <td>sortie</td>
-      <td>2025-09-02 10:00:00</td>
-      <td>2025-09-02 16:00:00</td>
-      <td>54</td>
-      <td>50</td>
-    </tr>
-    <tr>
-      <td>Piscine municipale</td>
-      <td>sortie</td>
-      <td>2025-09-01 14:00:00</td>
-      <td>2025-09-01 17:00:00</td>
-      <td>54</td>
-      <td>52</td>
-    </tr>
-    <tr>
-      <td>Activité #2</td>
-      <td>centre</td>
-      <td>2025-08-25 09:00:00</td>
-      <td>2025-08-25 12:00:00</td>
-      <td>75</td>
-      <td>72</td>
-    </tr>
-    <tr>
-      <td>Activité #1</td>
-      <td>centre</td>
-      <td>2025-08-25 09:00:00</td>
-      <td>2025-08-25 12:00:00</td>
-      <td>75</td>
-      <td>74</td>
-    </tr>
-  </table>
+<div class="container">
+  <h1 class="rainbow-title">
+    <?= $toSpans('Inscriptions — ' . (string)$titreActivite) ?>
+  </h1>
 
-</body>
-</html>
+  <div class="actions-bar">
+    <a class="btn btn-secondary" href="<?= (defined('BASE_PATH') ? BASE_PATH : '') ?>/inscriptions/create">+ Nouvelle inscription</a>
+    <a class="btn" href="<?= (defined('BASE_PATH') ? BASE_PATH : '') ?>/staff/certificats">Espace staff</a>
+  </div>
+
+  <?php if (!empty($rows)): ?>
+    <table>
+      <tr>
+        <th>Enfant</th>
+        <th>Statut</th>
+        <th>Créée le</th>
+      </tr>
+      <?php foreach ($rows as $i): ?>
+        <tr>
+          <td>
+            <?php
+              $prenom = $i['prenom'] ?? ($i['enfant_prenom'] ?? '');
+              $nom    = $i['nom']    ?? ($i['enfant_nom']    ?? '');
+              echo htmlspecialchars(trim($prenom . ' ' . $nom), ENT_QUOTES, 'UTF-8');
+            ?>
+          </td>
+          <td><?= htmlspecialchars((string)($i['statut'] ?? '-'), ENT_QUOTES, 'UTF-8') ?></td>
+          <td><?= htmlspecialchars((string)($i['created_at'] ?? '-'), ENT_QUOTES, 'UTF-8') ?></td>
+        </tr>
+      <?php endforeach; ?>
+    </table>
+  <?php else: ?>
+    <div class="card">Aucune inscription pour le moment.</div>
+  <?php endif; ?>
+</div>

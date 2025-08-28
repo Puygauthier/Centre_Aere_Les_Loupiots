@@ -6,22 +6,22 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title><?= isset($title) ? htmlspecialchars($title, ENT_QUOTES, 'UTF-8') : 'Centre Aéré' ?></title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- CSS global Loupiots -->
+  <link rel="stylesheet" href="<?= (defined('BASE_PATH') ? BASE_PATH : '') ?>/style.css?v=3">
 </head>
 <body class="bg-light">
-
 <?php
   // Base d’URL de l’app (définie dans public/index.php)
   $base = defined('BASE_PATH') ? BASE_PATH : '';
   // URL actuelles (pour activer l’onglet courant)
-  $current = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH) ?? '/';
-  $homeUrl    = $base !== '' ? $base . '/' : '/';
-  $enfantsUrl = $base . '/enfants';
-  $seancesUrl = $base . '/seances';
-  $isHome     = ($current === $homeUrl) || ($current === $base) || ($current === $base . '/index.php');
-  $isEnfants  = ($current === $enfantsUrl);
-  $isSeances  = ($current === $seancesUrl);
+  $current   = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH) ?? '/';
+  $homeUrl   = $base !== '' ? $base . '/' : '/';
+  $enfantsUrl= $base . '/enfants';
+  $seancesUrl= $base . '/seances';
+  $isHome    = ($current === $homeUrl) || ($current === $base) || ($current === $base . '/index.php');
+  $isEnfants = ($current === $enfantsUrl);
+  $isSeances = ($current === $seancesUrl);
 ?>
-
 <nav class="navbar navbar-expand-lg bg-body-tertiary">
   <div class="container">
     <a class="navbar-brand" href="<?= $homeUrl ?>">Centre Aéré</a>

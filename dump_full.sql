@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1:3306
--- Généré le : mar. 19 août 2025 à 15:25
+-- Généré le : mer. 03 sep. 2025 à 10:12
 -- Version du serveur : 9.1.0
 -- Version de PHP : 8.3.14
 
@@ -46,13 +46,13 @@ CREATE TABLE IF NOT EXISTS `activites` (
 --
 
 INSERT INTO `activites` (`id`, `titre`, `nom`, `description`, `capacity`, `created_at`, `categorie`, `date_debut`, `date_fin`) VALUES
-(1, 'Activité #1', 'Atelier sport', 'Jeux collectifs en extérieur', 75, '2025-08-18 12:47:22', 'centre', '2025-08-25 09:00:00', '2025-08-25 12:00:00'),
-(2, 'Activité #2', 'Arts créatifs', 'Peinture & bricolage', 75, '2025-08-18 12:47:22', 'centre', '2025-08-25 09:00:00', '2025-08-25 12:00:00'),
-(3, 'Piscine municipale', '', 'Séance piscine', 54, '2025-08-18 13:13:51', 'sortie', '2025-09-01 14:00:00', '2025-09-01 17:00:00'),
-(4, 'Sortie vélo + pique-nique', '', 'Balade + repas', 54, '2025-08-18 13:13:51', 'sortie', '2025-09-02 10:00:00', '2025-09-02 16:00:00'),
-(5, 'Atelier peinture', '', 'Activité manuelle au centre', 75, '2025-08-18 14:19:25', 'centre', '2025-08-25 09:00:00', '2025-08-25 12:00:00'),
-(6, 'Journée plage + pique-nique', '', 'Bus + baignade', 54, '2025-08-18 14:19:25', 'sortie', '2025-08-28 09:00:00', '2025-08-28 17:00:00'),
-(7, 'Cinéma', '', 'Projection jeunesse', 54, '2025-08-18 14:19:26', 'sortie', '2025-09-03 14:00:00', '2025-09-03 16:30:00');
+(1, 'Activité #1', 'Atelier sport', 'Jeux collectifs en extérieur', 75, '2025-08-18 12:47:22', 'centre', '2025-09-09 09:00:00', '2025-09-09 17:30:00'),
+(2, 'Activité #2', 'Arts créatifs', 'Peinture & bricolage', 75, '2025-08-18 12:47:22', 'centre', '2025-09-09 09:00:00', '2025-09-09 17:30:00'),
+(3, 'Piscine municipale', '', 'Séance piscine', 54, '2025-08-18 13:13:51', 'sortie', '2025-09-01 14:00:00', '2025-09-09 17:30:00'),
+(4, 'Sortie vélo + pique-nique', '', 'Balade + repas', 54, '2025-08-18 13:13:51', 'sortie', '2025-09-02 10:00:00', '2025-09-09 17:30:00'),
+(5, 'Atelier peinture', '', 'Activité manuelle au centre', 75, '2025-08-18 14:19:25', 'centre', '2025-09-09 09:00:00', '2025-09-09 17:30:00'),
+(6, 'Journée plage + pique-nique', '', 'Bus + baignade', 54, '2025-08-18 14:19:25', 'sortie', '2025-09-07 09:00:00', '2025-09-09 17:30:00'),
+(7, 'Cinéma', '', 'Projection jeunesse', 54, '2025-08-18 14:19:26', 'sortie', '2025-09-03 14:00:00', '2025-09-09 17:30:00');
 
 -- --------------------------------------------------------
 
@@ -143,14 +143,15 @@ CREATE TABLE IF NOT EXISTS `enfant_certificats` (
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   UNIQUE KEY `uniq_enfant_certif_type` (`enfant_id`,`certificat_type_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Déchargement des données de la table `enfant_certificats`
 --
 
 INSERT INTO `enfant_certificats` (`id`, `enfant_id`, `certificat_type_id`, `fichier_path`, `statut`, `verified_at`, `verified_by`, `created_at`) VALUES
-(1, 1, 1, '/uploads/certifs/1755532185_Certificatdenatation.docx', 'valide', '2025-08-18 17:52:41', 1, '2025-08-18 15:49:45');
+(1, 1, 1, '/uploads/certifs/1755532185_Certificatdenatation.docx', 'valide', '2025-08-18 17:52:41', 1, '2025-08-18 15:49:45'),
+(2, 6, 1, '/uploads/certifs/1756382919_Certificatdenatation.docx', 'valide', '2025-08-28 14:24:18', 1, '2025-08-28 12:08:39');
 
 -- --------------------------------------------------------
 
@@ -170,7 +171,7 @@ CREATE TABLE IF NOT EXISTS `inscriptions` (
   KEY `idx_act` (`activite_id`),
   KEY `idx_enf` (`enfant_id`),
   KEY `idx_statut` (`statut`)
-) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Déchargement des données de la table `inscriptions`
@@ -189,7 +190,11 @@ INSERT INTO `inscriptions` (`id`, `enfant_id`, `activite_id`, `statut`, `created
 (14, 2, 2, 'valide', '2025-08-18 14:10:43'),
 (15, 3, 7, 'valide', '2025-08-18 14:20:43'),
 (16, 2, 5, 'valide', '2025-08-18 15:48:06'),
-(17, 1, 3, 'valide', '2025-08-18 15:49:45');
+(17, 1, 3, 'valide', '2025-08-18 15:49:45'),
+(18, 1, 6, 'valide', '2025-08-21 12:58:52'),
+(19, 3, 5, 'valide', '2025-08-28 11:15:06'),
+(20, 1, 7, 'valide', '2025-08-28 11:25:13'),
+(21, 6, 6, 'valide', '2025-08-28 12:08:39');
 
 -- --------------------------------------------------------
 

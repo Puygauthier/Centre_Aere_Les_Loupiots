@@ -1,4 +1,4 @@
-<!doctype html> 
+<!doctype html>
 <html lang="fr">
 <head>
   <meta charset="utf-8">
@@ -17,6 +17,20 @@
       font-weight: 800;
       text-align: left; /* pour une liste lisible */
     }
+    /* Flash messages */
+    .flash{
+      max-width: 640px;
+      margin: 0 auto 12px;
+      padding: 10px 12px;
+      border-radius: 10px;
+      border: 1px solid;
+      font-weight: 600;
+    }
+    .flash-success{ background:#e7f7ed; border-color:#b9e3c7; color:#14532d; }
+    .flash-error{ background:#fdeaea; border-color:#f3c0c0; color:#7f1d1d; }
+    .flash-warning{ background:#fff7e6; border-color:#ffe1a3; color:#7c2d12; }
+    .flash-info{ background:#e6f0ff; border-color:#bcd3ff; color:#1e3a8a; }
+
     /* Libellés multicolores (petit arc-en-ciel) */
     .rainbow-label span{ display:inline-block; font-weight:800; }
     .rainbow-label span:nth-child(1){color:#e11d48}
@@ -32,8 +46,20 @@
   </style>
 </head>
 <body>
+<?php if (session_status() !== PHP_SESSION_ACTIVE) session_start(); ?>
 
 <div class="container">
+
+  <!-- Flash message (si présent dans la session) -->
+  <?php if (!empty($_SESSION['flash'])): 
+        $f = $_SESSION['flash']; unset($_SESSION['flash']);
+        $type = htmlspecialchars($f['type'] ?? 'info');
+        $text = htmlspecialchars($f['text'] ?? '', ENT_QUOTES, 'UTF-8');
+        $cls = 'flash-'.$type;
+        if (!in_array($cls, ['flash-success','flash-error','flash-warning','flash-info'])) $cls = 'flash-info';
+  ?>
+    <div class="flash <?= $cls; ?>"><?= $text; ?></div>
+  <?php endif; ?>
 
   <h1 class="rainbow-title">
     <span>N</span><span>o</span><span>u</span><span>v</span><span>e</span><span>l</span><span>l</span><span>e</span>
@@ -51,8 +77,10 @@
   </div>
 
   <div class="card form-grid">
-    <!-- enctype ajouté pour permettre l'upload -->
+    <!-- enctype pour permettre l'upload -->
     <form method="post" action="<?= BASE_PATH ?>/inscriptions" enctype="multipart/form-data">
+      <!-- CSRF token (obligatoire) -->
+      <input type="hidden" name="csrf" value="<?= htmlspecialchars($_SESSION['csrf_token'] ?? '', ENT_QUOTES, 'UTF-8') ?>">
 
       <label for="enfant" class="rainbow-label" aria-label="Enfant">
         <span>E</span><span>n</span><span>f</span><span>a</span><span>n</span><span>t</span>

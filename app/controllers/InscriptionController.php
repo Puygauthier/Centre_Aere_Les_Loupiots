@@ -32,6 +32,13 @@ class InscriptionController
 
   // GET /inscriptions/create
   public function create(): void {
+    // CSRF: prépare le token pour le formulaire
+    if (session_status() !== PHP_SESSION_ACTIVE) session_start();
+    if (empty($_SESSION['csrf_token'])) {
+      $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+    }
+    $csrfToken = $_SESSION['csrf_token'];
+
     $enfants   = Enfant::all();
     $activites = method_exists(Activite::class, 'allOpen') ? Activite::allOpen() : Activite::all();
     include ROOT . '/app/views/inscriptions/create.php';
@@ -39,6 +46,15 @@ class InscriptionController
 
   // POST /inscriptions
   public function store(): void {
+    if (session_status() !== PHP_SESSION_ACTIVE) session_start();
+
+    // CSRF: vérif du token
+    $postedToken = $_POST['csrf'] ?? '';
+    if (empty($_SESSION['csrf_token']) || !hash_equals($_SESSION['csrf_token'], $postedToken)) {
+      $_SESSION['flash'] = ['type'=>'error','text'=>"Session expirée ou formulaire invalide. Merci de réessayer."];
+      header('Location: /inscriptions/create'); return;
+    }
+
     $enfantId   = (int)($_POST['enfant_id'] ?? 0);
     $activiteId = (int)($_POST['activite_id'] ?? 0);
 
@@ -49,7 +65,7 @@ class InscriptionController
 
     $pdo = Database::getPdo();
 
-    // 1) Liste des certificats requis pour l'activité
+    // 1) Certificats requis pour l'activité
     $requis = Activite::certificatsRequis($activiteId); // [] si aucun
     $manquants = [];
     $uploads = []; // certificats fournis maintenant
@@ -72,7 +88,7 @@ class InscriptionController
         }
       }
 
-      // Si au moins un requis manque et aucun upload correspondant → BLOQUER (pas d'inscription)
+      // manquants → bloquer (pas d'inscription)
       if (!empty($manquants)) {
         $liste = implode(', ', $manquants);
         $_SESSION['flash'] = ['type'=>'error','text' =>
@@ -84,6 +100,11 @@ class InscriptionController
         header('Location: /inscriptions/create'); return;
       }
     }
+
+    // Paramètres de sécurité upload
+    $maxBytes = 2 * 1024 * 1024; // 2 Mo
+    $extOK    = ['pdf','jpg','jpeg','png'];
+    $mimeOK   = ['application/pdf','image/jpeg','image/png'];
 
     try {
       $pdo->beginTransaction();
@@ -106,19 +127,37 @@ class InscriptionController
         header('Location: /inscriptions?enfant_id='.$enfantId); return;
       }
 
-      // 3) Si des certificats ont été uploadés maintenant → enregistrer en 'en_attente'
+      // 3) S'il y a des certificats uploadés maintenant → enregistrer en 'en_attente'
       if (!empty($uploads)) {
         $destDir = ROOT.'/public/uploads/certifs';
         if (!is_dir($destDir)) @mkdir($destDir, 0775, true);
 
         foreach ($uploads as $u) {
-          $r   = $u['row'];
-          $f   = $u['file'];
-          $tmp = $f['tmp_name'];
+          $r = $u['row'];
+          $f = $u['file'];
+
+          // Vérifs upload
+          if ($f['error'] !== UPLOAD_ERR_OK) {
+            throw new \RuntimeException('Upload échoué (code '.$f['error'].') pour '.$r['libelle']);
+          }
+          if ($f['size'] > $maxBytes) {
+            throw new \RuntimeException('Fichier trop volumineux (max 2 Mo) pour '.$r['libelle']);
+          }
+          $ext = strtolower(pathinfo($f['name'], PATHINFO_EXTENSION));
+          if (!in_array($ext, $extOK, true)) {
+            throw new \RuntimeException('Format non autorisé (PDF/JPG/PNG) pour '.$r['libelle']);
+          }
+          $fi = new \finfo(FILEINFO_MIME_TYPE);
+          $mime = $fi->file($f['tmp_name']);
+          if (!in_array($mime, $mimeOK, true)) {
+            throw new \RuntimeException('Type de fichier invalide pour '.$r['libelle']);
+          }
+
+          // Déplacement
           $safe = time().'_'.preg_replace('/[^a-zA-Z0-9_\.-]/','', $f['name']);
           $dest = $destDir.'/'.$safe;
-          if (!move_uploaded_file($tmp, $dest)) {
-            throw new \RuntimeException("Échec upload: ".$r['libelle']);
+          if (!move_uploaded_file($f['tmp_name'], $dest)) {
+            throw new \RuntimeException("Échec de sauvegarde du fichier pour ".$r['libelle']);
           }
           $web = '/uploads/certifs/'.$safe;
 
@@ -129,7 +168,7 @@ class InscriptionController
           $st->execute([$enfantId, (int)$r['id'], $web]);
         }
 
-        // Inscription en attente (la capacité sera vérifiée au moment de la promotion)
+        // Inscription en attente (capacité vérifiée lors de la promotion staff)
         $st = $pdo->prepare("INSERT INTO inscriptions (enfant_id, activite_id, statut) VALUES (?,?, 'en_attente')");
         $st->execute([$enfantId, $activiteId]);
 
@@ -158,8 +197,9 @@ class InscriptionController
       header('Location: /inscriptions?enfant_id='.$enfantId);
     } catch (\Throwable $e) {
       if ($pdo->inTransaction()) $pdo->rollBack();
-      http_response_code(500);
-      echo "Erreur lors de l'inscription: " . htmlspecialchars($e->getMessage(), ENT_QUOTES, 'UTF-8');
+      // Message utilisateur propre + retour au formulaire
+      $_SESSION['flash'] = ['type'=>'error','text'=>"Erreur lors de l'inscription : ".$e->getMessage()];
+      header('Location: /inscriptions/create');
     }
   }
 }
